@@ -57,7 +57,10 @@ class WordCountService {
   private def validateAndTranslateWord(word : String) : Either[String,String] = {
     word match {
       case word if StringUtils.isBlank(word) => Left(s"Word is empty")
-      case word if StringUtils.isAlphanumeric(word) => Right(word).map { word => translateService.translate(word) }
+      case word if StringUtils.isAlphanumeric(word) => Right(word).map { word =>
+        //NOTE: TranslateService should also normalise words, i.e. lowercase, remove whitespace, convert special characters, etc.
+        translateService.translate(word)
+      }
       case _ => Left(s"Word [$word] is not alphanumeric")
     }
   }

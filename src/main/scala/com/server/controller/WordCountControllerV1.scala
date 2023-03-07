@@ -30,6 +30,10 @@ class WordCountControllerV1 {
   )
   def wordCountMap() =
     ResponseEntity.status(HttpStatus.OK).body {
+      //build body:
+      //xxx=11
+      //yyy=2
+      //zzz=1
       wordCountService.getWordCountMap().toSeq.sortBy(-_._2).map { entry =>
         s"${entry._1}=${entry._2}"
       }.mkString("\n")
