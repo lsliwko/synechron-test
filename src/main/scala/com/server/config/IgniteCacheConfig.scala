@@ -48,7 +48,7 @@ class IgniteCacheConfig {
 
     igniteConfiguration.setDiscoverySpi(igniteSpiDiscovery)
 
-    val igniteCacheConfiguration = new CacheConfiguration("server-cache")
+    val igniteCacheConfiguration = new CacheConfiguration(IgniteCacheConfig.IGNITE_CACHE_NAME)
     igniteCacheConfiguration.setAtomicityMode(CacheAtomicityMode.ATOMIC)
 
     igniteConfiguration.setCacheConfiguration(igniteCacheConfiguration)
@@ -110,4 +110,8 @@ class IgniteCacheConfig {
     }
 
   }
+}
+
+object IgniteCacheConfig {
+  val IGNITE_CACHE_NAME = "server-cache"
 }

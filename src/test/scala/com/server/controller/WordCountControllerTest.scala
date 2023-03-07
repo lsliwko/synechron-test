@@ -1,10 +1,12 @@
 package com.server.controller
 
 import com.server.ServerTestConfiguration
+import com.server.service.TranslateService
 import org.assertj.core.api.Assertions._
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.junit.{FixMethodOrder, Ignore, Test}
+import org.mockito.Mockito.when
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
@@ -35,9 +37,14 @@ class WordCountControllerTest {
   @Autowired
   val restTemplate : TestRestTemplate = null
 
+  @Autowired
+  val translateService : TranslateService = null
+
   @Test
   @throws[Exception]
   def testWordIncrement {
+    when(translateService.translate("TestWordA")).thenReturn("TestWordA")
+
     val response1 = apiV1WordCountGet("TestWordA")
     assertThat(response1.getStatusCode.value()).isEqualTo(HttpStatus.OK.value)
     val count1 = response1.getBody.toLong
