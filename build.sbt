@@ -31,7 +31,6 @@ libraryDependencies += "org.springframework" % "spring-tx" % "5.3.25"
 //Swagger
 libraryDependencies += "org.springdoc" % "springdoc-openapi-ui" % "1.6.7"
 
-
 //Apache Ignite
 libraryDependencies += "org.apache.ignite" % "ignite-spring" % "2.11.1"
 libraryDependencies += "org.apache.ignite" % "ignite-indexing" % "2.11.1" exclude("com.h2database", "h2")
