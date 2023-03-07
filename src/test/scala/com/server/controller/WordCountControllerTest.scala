@@ -69,6 +69,8 @@ class WordCountControllerTest {
       apiV1WordCountUrl(word),
       classOf[String])
 
-  private def apiV1WordCountUrl(word : String) = new URI(s"http://localhost:$port/api/v1/$word/count")
+  private def apiV1WordCountUrl(word : String) = new URI(s"http://localhost:$port/api/v1/word/$word/count")
+
+  private def apiV1WordCountMapUrl(word : String) = new URI(s"http://localhost:$port/api/v1/counts")
 
 }

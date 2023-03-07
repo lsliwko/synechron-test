@@ -13,7 +13,7 @@ class WordCountControllerV1 {
   val wordCountService : WordCountService = null
 
   @RequestMapping(
-    value = Array("/api/v1/{word}/count"),
+    value = Array("/api/v1/word/{word}/count"),
     method = Array(RequestMethod.GET)
   )
   def wordCount(
@@ -24,5 +24,15 @@ class WordCountControllerV1 {
       case Left(error) => ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error)
     }
 
+  @RequestMapping(
+    value = Array("/api/v1/counts"),
+    method = Array(RequestMethod.GET)
+  )
+  def wordCountMap() =
+    ResponseEntity.status(HttpStatus.OK).body {
+      wordCountService.getWordCountMap().toSeq.sortBy(_._2).map { entry =>
+        s"${entry._1}=${entry._2}"
+      }.mkString("\n")
+    }
 
 }

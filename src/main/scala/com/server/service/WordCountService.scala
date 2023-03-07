@@ -1,9 +1,8 @@
 package com.server.service
 
-import com.server.config.IgniteCacheConfig
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.logging.LogFactory
-import org.apache.ignite.cache.CacheEntryProcessor
+import org.apache.ignite.cache.{CacheEntry, CacheEntryProcessor}
 import org.apache.ignite.{Ignite, IgniteCache}
 import org.apache.ignite.cache.query.ScanQuery
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +10,8 @@ import org.springframework.context.event.{ContextRefreshedEvent, EventListener}
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Service
 
-import javax.cache.processor.{EntryProcessor, MutableEntry}
+import javax.cache.processor.MutableEntry
+import scala.jdk.CollectionConverters._
 
 @Service
 class WordCountService {
@@ -50,6 +50,10 @@ class WordCountService {
       oldValue
     }
 
+  def getWordCountMap() : Map[String,Long] = {
+    wordCountCache.query(new ScanQuery[String,Long]).getAll.asScala.map { entry => (entry.getKey, entry.getValue) }.toMap
+  }
+
   private def validateAndTranslateWord(word : String) : Either[String,String] = {
     word match {
       case word if StringUtils.isBlank(word) => Left(s"Word is empty")
@@ -59,7 +63,7 @@ class WordCountService {
   }
 
   @EventListener(Array(classOf[ContextRefreshedEvent]))
-  @Order(/*START*/ 40)  //START early (after db is patched)
+  @Order(/*START*/ 40)
   def onContextRefreshedEvent() : Unit = {
     logger.info("Creating word-count cache...")
 
