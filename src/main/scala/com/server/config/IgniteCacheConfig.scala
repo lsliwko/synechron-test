@@ -7,6 +7,7 @@ import org.apache.ignite.cluster.ClusterState
 import org.apache.ignite.{Ignite, IgniteSpring, Ignition, ShutdownPolicy}
 import org.apache.ignite.configuration.{CacheConfiguration, IgniteConfiguration}
 import org.apache.ignite.logger.slf4j.Slf4jLogger
+import org.apache.ignite.spi.discovery.DiscoverySpi
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationContext
@@ -24,8 +25,20 @@ class IgniteCacheConfig {
 
   @ConditionalOnMissingBean
   @Bean
+  def igniteSpiDiscovery : DiscoverySpi = {
+    val igniteDiscoveryFinder = new TcpDiscoveryMulticastIpFinder
+
+    val tcpDiscovery = new TcpDiscoverySpi
+    tcpDiscovery.setIpFinder(igniteDiscoveryFinder)
+
+    tcpDiscovery
+  }
+
+  @ConditionalOnMissingBean
+  @Bean
   def igniteClient(
-    applicationContext : ApplicationContext
+    applicationContext : ApplicationContext,
+    igniteSpiDiscovery : DiscoverySpi
   ): Ignite = {
     logger.info(s"Starting Ignite Cache...")
 
@@ -33,12 +46,7 @@ class IgniteCacheConfig {
 
     igniteConfiguration.setGridLogger(new Slf4jLogger())
 
-    val igniteDiscoveryFinder = new TcpDiscoveryMulticastIpFinder
-
-    val tcpDiscovery = new TcpDiscoverySpi
-    tcpDiscovery.setIpFinder(igniteDiscoveryFinder)
-
-    igniteConfiguration.setDiscoverySpi(tcpDiscovery)
+    igniteConfiguration.setDiscoverySpi(igniteSpiDiscovery)
 
     val igniteCacheConfiguration = new CacheConfiguration("server-cache")
     igniteCacheConfiguration.setAtomicityMode(CacheAtomicityMode.ATOMIC)

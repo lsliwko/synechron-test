@@ -1,5 +1,6 @@
 package com.server.controller
 
+import com.server.ServerTestConfiguration
 import org.assertj.core.api.Assertions._
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -9,13 +10,22 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Import
 import org.springframework.http.{HttpStatus, ResponseEntity}
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit4.SpringRunner
 
 import java.net.URI
 
 @RunWith(classOf[SpringRunner])
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+  webEnvironment = WebEnvironment.RANDOM_PORT,
+  properties = Array(
+    "spring.main.allow-bean-definition-overriding=true"
+  )
+)
+@Import(Array(classOf[ServerTestConfiguration]))
+@DirtiesContext
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class WordCountControllerTest {
 

@@ -1,33 +1,26 @@
 package com.server.service
 
+import com.server.ServerTestConfiguration
 import org.assertj.core.api.Assertions._
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.junit.{FixMethodOrder, Test}
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.{SpringBootTest, TestConfiguration}
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.test.context.junit4.SpringRunner
-import org.mockito.Mockito
 import org.mockito.Mockito.when
-import org.springframework.context.annotation.{Bean, Import, Primary}
+import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
-
-@TestConfiguration
-class WordCountServiceTestConfiguration {
-
-  @Bean
-  @Primary
-  def translateService: TranslateService = Mockito.mock(classOf[TranslateService])
-
-}
 
 @RunWith(classOf[SpringRunner])
 @SpringBootTest(
   webEnvironment = WebEnvironment.RANDOM_PORT,
-  properties = Array("spring.main.allow-bean-definition-overriding=true")
+  properties = Array(
+    "spring.main.allow-bean-definition-overriding=true"
+  )
 )
-@Import(Array(classOf[WordCountServiceTestConfiguration]))
+@Import(Array(classOf[ServerTestConfiguration]))
 @DirtiesContext
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class WordCountServiceTest {

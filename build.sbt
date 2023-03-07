@@ -8,7 +8,7 @@ import sbt.Package.ManifestAttributes
 
 val now = System.currentTimeMillis
 
-name := "properties-engine"
+name := "synechron-test"
 version := "1.0.0"
 
 scalaVersion := "2.13.8"
