@@ -66,7 +66,6 @@ class WordCountService {
   @Order(/*START*/ 40)
   def onContextRefreshedEvent() : Unit = {
     logger.info("Creating word-count cache...")
-
     wordCountCache  = igniteClient.getOrCreateCache[String,Long]("word-count-cache")
   }
 

@@ -8,6 +8,8 @@
 
 4. ScalaTest does not work nicely with SpringRunner (which is used to test controller / service), thus the tests were created with JUnit.
 
-5. To open Swagger for api visit http://localhost:8080/swagger-ui/index.html#/word-count-controller-v-1/wordCount
+5. The specification mentioned sorting / retrieving all word counts. For it to work, applications executes QueryScan over distributed cache. It's implemented as WordCountService.getWordCountMap.
+
+6. To open Swagger for api visit http://localhost:8080/swagger-ui/index.html#/word-count-controller-v-1/wordCount
 
 ![Usage GUI 1](screencapture-localhost-8080-swagger-ui.png "Usage GUI 1")

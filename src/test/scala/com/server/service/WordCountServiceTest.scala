@@ -13,6 +13,8 @@ import org.mockito.Mockito.when
 import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
 
+import scala.jdk.CollectionConverters._
+
 @RunWith(classOf[SpringRunner])
 @SpringBootTest(
   webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -73,6 +75,29 @@ class WordCountServiceTest {
 
     assertThat(wordCountService.getCount("TestWordA")).isEqualTo(Right(2))
     assertThat(wordCountService.getCount("TestWordAVariant")).isEqualTo(Right(2))
+  }
+
+  @Test
+  def testWordCountMap {
+
+    when(translateService.translate("TestWordA")).thenReturn("TestWordA")
+    when(translateService.translate("TestWordB")).thenReturn("TestWordB")
+    when(translateService.translate("TestWordC")).thenReturn("TestWordC")
+
+    wordCountService.resetCount("TestWordA")
+    wordCountService.resetCount("TestWordB")
+    wordCountService.resetCount("TestWordC")
+
+    assertThat(wordCountService.increaseCount("TestWordA")).isEqualTo(Right(1))
+    assertThat(wordCountService.increaseCount("TestWordB")).isEqualTo(Right(1))
+    assertThat(wordCountService.increaseCount("TestWordA")).isEqualTo(Right(2))
+
+    assertThat(wordCountService.getWordCountMap().asJava).containsAllEntriesOf(
+      Map(
+        ("TestWordA" -> 2l),
+        ("TestWordB" -> 1l)
+      ).asJava
+    )
   }
 
 

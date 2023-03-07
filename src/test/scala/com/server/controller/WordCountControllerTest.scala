@@ -1,7 +1,7 @@
 package com.server.controller
 
 import com.server.ServerTestConfiguration
-import com.server.service.TranslateService
+import com.server.service.{TranslateService, WordCountService}
 import org.assertj.core.api.Assertions._
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -40,6 +40,9 @@ class WordCountControllerTest {
   @Autowired
   val translateService : TranslateService = null
 
+  @Autowired
+  val wordCountService : WordCountService = null
+
   @Test
   @throws[Exception]
   def testWordIncrement {
@@ -64,6 +67,35 @@ class WordCountControllerTest {
     assertThat(response.getBody).isEqualTo("Word [TestWordA!] is not alphanumeric")
   }
 
+  @Test
+  @throws[Exception]
+  def testWordCountMap {
+    when(translateService.translate("TestWordA")).thenReturn("TestWordA")
+    when(translateService.translate("TestWordB")).thenReturn("TestWordB")
+    when(translateService.translate("TestWordC")).thenReturn("TestWordC")
+
+    wordCountService.resetCount("TestWordA")
+    wordCountService.resetCount("TestWordB")
+    wordCountService.resetCount("TestWordC")
+
+    wordCountService.increaseCount("TestWordA")
+    wordCountService.increaseCount("TestWordC")
+    wordCountService.increaseCount("TestWordA")
+    wordCountService.increaseCount("TestWordB")
+    wordCountService.increaseCount("TestWordC")
+    wordCountService.increaseCount("TestWordC")
+
+    val responseMap = restTemplate.getForEntity(
+      apiV1WordCountMapUrl,
+      classOf[String])
+    assertThat(responseMap.getStatusCode.value()).isEqualTo(HttpStatus.OK.value)
+
+    assertThat(responseMap.getBody).isEqualTo(
+      s"TestWordC=3\n" +
+      s"TestWordA=2\n" +
+      s"TestWordB=1")
+  }
+
   private def apiV1WordCountGet(word : String) : ResponseEntity[String] =
     restTemplate.getForEntity(
       apiV1WordCountUrl(word),
@@ -71,6 +103,6 @@ class WordCountControllerTest {
 
   private def apiV1WordCountUrl(word : String) = new URI(s"http://localhost:$port/api/v1/word/$word/count")
 
-  private def apiV1WordCountMapUrl(word : String) = new URI(s"http://localhost:$port/api/v1/counts")
+  private def apiV1WordCountMapUrl() = new URI(s"http://localhost:$port/api/v1/counts")
 
 }
