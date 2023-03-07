@@ -26,6 +26,8 @@ class IgniteCacheConfig {
   @ConditionalOnMissingBean
   @Bean
   def igniteSpiDiscovery : DiscoverySpi = {
+    //NOTE: Discovery can work in many modes, i.e. TCP multi-cast, shared S3 bucket, etc.
+
     val igniteDiscoveryFinder = new TcpDiscoveryMulticastIpFinder
 
     val tcpDiscovery = new TcpDiscoverySpi
